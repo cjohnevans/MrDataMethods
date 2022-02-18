@@ -1,5 +1,6 @@
 from pydicom import dcmread
 from dicom_parser import Image
+from dicom_parser.utils.siemens.csa.header import CsaHeader
 
 
 class SiemensDicom:
@@ -99,9 +100,21 @@ class SiemensDicom:
             print(dd[(0x0029, 0x1010)].description)
 
     def show_dicom_field_parser(self):
-        print(len(self.dcm_p))
         for dd in self.dcm_p:
-            print(dd.header.get('EchoTime'))
-            #print(dd.header)
+            #print(dd.header.get('EchoTime'))
+            #print(dir(dd.header))
+            #print(dd.header.keys)
+            print('=================================================================================')
+            print('=================================================================================')
 
+            print(dd.header.keys)
+            for k in dd.header.keys:
+                try:
+                    #print(str(dd.header.get(k)))
+                    if 'Csa' in k:
+                        print('has Csa ',k)
+                        csa = dd.header.get(k, parsed=False)
+                        print(csa)
+                except:
+                    print('something wrong with ', k)
         
