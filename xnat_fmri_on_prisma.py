@@ -5,7 +5,8 @@ fname = 'sapje1_2_17_2022_11_26_25.csv'
 scanfilters = [{'Scanner': '66073', 'Scans': 'bold'}, \
                {'Scanner': '66073', 'Scans': 'fmri'}, \
                {'Scanner': '66073', 'Scans': 'mb'}, \
-               {'Scanner': '66073', 'Scans': 'ep2d'} ]
+               {'Scanner': '66073', 'Scans': 'ep2d'} \
+               ]
 
 scans = xnatproc.XnatProc()
 scans.read_scan_list(fname)
