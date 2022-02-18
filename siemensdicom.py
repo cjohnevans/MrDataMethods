@@ -9,21 +9,22 @@ class SiemensDicom:
     def read_dicom(self, file_list):
         self.n_dicoms = len(file_list)
         for file in file_list:
+            print(file)
             if '.dcm' in file:
                 self.dcm.append(dcmread(file))
                 self.dcm_file.append(file)
         print(file_list[0])
 
-    def show_dicom(self, dicom_no):
+    def show_dicom(self):
         '''
         print dicom info from one of the dicom files loaded
         shows verbose list of fields.
         '''
-        print('>>>', self.dcm_file[dicom_no], '>>>')
-        self.show_dicom_field(dicom_no, 'all')
+        print('>>>', self.dcm_file, '>>>')
+        self.show_dicom_field('all')
 
 
-    def show_dicom_field(self, dicom_no, fields):
+    def show_dicom_field(self, fields):
         '''
         show single dicom field
         '''
@@ -65,23 +66,24 @@ class SiemensDicom:
         ##    grad_vec_length.append( ( vec[0]**2 + vec[1]**2 + \
         ##                              vec[2]**2 ) ** (1/2) )
         
-        if fields == 'all': #all fields
-            for printfield in field_lookup:
+        for dd in self.dcm:
+            if fields == 'all': #all fields
+                for printfield in field_lookup:
+                    try:
+                        print(dd[field_lookup[printfield]])
+                    except:
+                        print('DICOM field ', printfield, ' not found')
+            elif len(fields) == 1:   #single field
                 try:
-                    print(self.dcm[dicom_no][field_lookup[printfield]])
+                    print(dd[field_lookup[fields[0]]])
                 except:
                     print('DICOM field ', printfield, ' not found')
-        elif len(fields) == 1:   #single field
-            try:
-                print(self.dcm[dicom_no][field_lookup[fields[0]]])
-            except:
-                print('DICOM field ', printfield, ' not found')
-        else:    #only loop for multiple values in list
-            for printfield in fields:
-                try:
-                    print(self.dcm[dicom_no][field_lookup[printfield]])
-                except:
-                    print('DICOM field ', printfield, ' not found')
+            else:    #only loop for multiple values in list
+                for printfield in fields:
+                    try:
+                        print(dd[field_lookup[printfield]])
+                    except:
+                        print('DICOM field ', printfield, ' not found')
 
     def show_unformatted(self):
         for dd in self.dcm:
