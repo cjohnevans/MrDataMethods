@@ -1,9 +1,12 @@
 from pydicom import dcmread
+from dicom_parser import Image
+
 
 class SiemensDicom:
     def __init__(self):
         self.n_dicoms = 0
         self.dcm = []   #list of dicts
+        self.dcm_p = []   
         self.dcm_file = []
 
     def read_dicom(self, file_list):
@@ -11,9 +14,13 @@ class SiemensDicom:
         for file in file_list:
             print(file)
             if '.dcm' in file:
+                # using pydicom
                 self.dcm.append(dcmread(file))
                 self.dcm_file.append(file)
+                # using dicom_parser
+                self.dcm_p.append(Image(file))
         print(file_list[0])
+
 
     def show_dicom(self):
         '''
@@ -90,5 +97,11 @@ class SiemensDicom:
             print(dd)
             print(dir(dd))
             print(dd[(0x0029, 0x1010)].description)
+
+    def show_dicom_field_parser(self):
+        print(len(self.dcm_p))
+        for dd in self.dcm_p:
+            print(dd.header.get('EchoTime'))
+            #print(dd.header)
 
         

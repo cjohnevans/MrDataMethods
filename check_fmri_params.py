@@ -8,7 +8,7 @@ print(dcm_files)
 
 dcmhdr = siemensdicom.SiemensDicom()
 dcmhdr.read_dicom(dcm_files)
-dcmhdr.show_dicom_field('all')
+#dcmhdr.show_dicom_field('all')
+dcmhdr.show_dicom_field_parser()
 
-
-dcmhdr.show_unformatted()
+#dcmhdr.show_unformatted()
