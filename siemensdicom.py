@@ -6,20 +6,21 @@ class SiemensDicom:
         self.dcm = []   #list of dicts
         self.dcm_file = []
 
-    def read_dicom(self, file_list):
-        self.n_dicoms = len(file_list)
-        for file in file_list:
-            if '.dcm' in file:
-                self.dcm.append(dcmread(file))
-                self.dcm_file.append(file)
+    # currently reads a single file, but some syntax assumes multi-file compatiblity
+    #  Need to decide on whether single or multi is more logical.
+    def read_dicom(self, file):
+        if '.dcm' in file:
+            self.dcm.append(dcmread(file))
+            self.dcm_file.append(file)
 
+    # assumes single file in the SiemensDicom object
     def show_dicom(self):
         '''
         print dicom info from one of the dicom files loaded
         shows verbose list of fields.
         '''
-        print('>>>', self.dcm_file[dicom_no], '>>>')
-        self.show_dicom_field(dicom_no, 'all')
+        print('>>>', self.dcm_file, '>>>')
+        self.show_dicom_field('all')
 
 
     def show_dicom_field(self, fields):
