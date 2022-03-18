@@ -19,7 +19,7 @@ def basic_preproc(mrs_data):
     '''
     comb_channels = suspect.processing.channel_combination.combine_channels(mrs_data)
     avg_comb = np.mean(comb_channels,0)
-    phase_est = suspect.processing.phase.mag_real(avg_comb,(),(0.0, 6.0))
+    phase_est = suspect.processing.phase.mag_real(avg_comb,(),(1.0, 4.5))
     return avg_comb.adjust_phase(phase_est[0],phase_est[1],0) 
 
 def twixmrs_load_basic(data_dir, in_file):    
@@ -71,7 +71,6 @@ def twixmrs_plot(plot_mrs_data, line_label):
                 label = line_label[ii])
         ii = ii + 1
     ax.set_xlim(6,0)
-    #ax.set_ylim(-3,25)
     plt.legend()
     plt.show()
 
