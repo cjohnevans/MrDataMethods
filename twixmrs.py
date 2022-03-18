@@ -66,7 +66,7 @@ def twixmrs_plot(plot_mrs_data, line_label):
     scale = 1e5
     offset = 15
     ii=0
-    for dat in mrs_data:
+    for dat in plot_mrs_data:
         ax.plot(dat.frequency_axis_ppm(), np.real(scale*dat.spectrum() + (ii*offset) ) , \
                 label = line_label[ii])
         ii = ii + 1
@@ -75,17 +75,18 @@ def twixmrs_plot(plot_mrs_data, line_label):
     plt.legend()
     plt.show()
 
-# wand 3T MRS
-data_dir = '/home/sapje1/data_sapje1/projects/wand/mrs/19_06_14-11_17_09-DST-1_3_12_2_1107_5_2_43_66073/scans/502-RAW_anonymised/resources/TWIX/files'
-in_file = 'meas_MID00465_FID13471_mpress_AC_met.dat'
-#covid bbb brainstem 7t cubric pilot
-data_dir = '/home/sapje1/data_sapje1/projects/covidbbb'
-in_file = [ 'pilot220315/meas_MID165_sLaser_Brainstem_20_12_12_FID118913.dat', \
-            'oxford017/meas_MID156_sLaser_Brainstem_20_12_12_FID7821.dat', \
-            'oxford018/meas_MID112_sLaser_Brainstem_20_12_12_FID8065.dat' ]
-mrs_data = twixmrs_load_basic(data_dir, in_file)
-
-line_label = ['CUBRIC_220315', 'Oxford_017','Oxford_018']
-twixmrs_plot(mrs_data, line_label)
+###for testing, from original script version
+### wand 3T MRS
+##data_dir = '/home/sapje1/data_sapje1/projects/wand/mrs/19_06_14-11_17_09-DST-1_3_12_2_1107_5_2_43_66073/scans/502-RAW_anonymised/resources/TWIX/files'
+##in_file = 'meas_MID00465_FID13471_mpress_AC_met.dat'
+###covid bbb brainstem 7t cubric pilot
+##data_dir = '/home/sapje1/data_sapje1/projects/covidbbb'
+##in_file = [ 'pilot220315/meas_MID165_sLaser_Brainstem_20_12_12_FID118913.dat', \
+##            'oxford017/meas_MID156_sLaser_Brainstem_20_12_12_FID7821.dat', \
+##            'oxford018/meas_MID112_sLaser_Brainstem_20_12_12_FID8065.dat' ]
+##mrs_data = twixmrs_load_basic(data_dir, in_file)
+##
+##line_label = ['CUBRIC_220315', 'Oxford_017','Oxford_018']
+##twixmrs_plot(mrs_data, line_label)
 
 
