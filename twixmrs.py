@@ -60,7 +60,7 @@ def twixmrs_load_basic(data_dir, in_file):
                 preproc_mrsdata.append(basic_preproc(twix_data[i]))
     return preproc_mrsdata
 
-def twixmrs_plot(plot_mrs_data, line_label):
+def twixmrs_plot(plot_mrs_data, line_label, scale=1e5, offset=15, xlim=(6,0), ylim=None):
     fig,ax = plt.subplots()
     offset = 0
     scale = 1e5
@@ -70,7 +70,9 @@ def twixmrs_plot(plot_mrs_data, line_label):
         ax.plot(dat.frequency_axis_ppm(), np.real(scale*dat.spectrum() + (ii*offset) ) , \
                 label = line_label[ii])
         ii = ii + 1
-    ax.set_xlim(6,0)
+    ax.set_xlim(xlim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
     plt.legend()
     plt.show()
 
