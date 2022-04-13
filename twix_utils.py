@@ -49,12 +49,11 @@ def twix_partial_write(input_file, output_file, start_pos, max_bytes=-1):
         with open(output_file, 'wb') as f_out:
             byte = b'1'
             pos=f_in.seek(start_pos)
-            while ( byte and pos < max_bytes):
+            while ( byte and ( pos < max_bytes or max_bytes == -1) ):
                 byte = f_in.read(1)
                 pos = f_in.tell()
-                print(str(pos), str(byte))
-                #f_out.write(byte)
-
+                f_out.write(byte)
+                
     return True
 
 
