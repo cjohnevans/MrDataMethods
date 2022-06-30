@@ -36,7 +36,7 @@ def twixmrs_load_basic(data_dir, in_file):
     '''
     if type(in_file) is str:
         in_file_list = [ in_file ]  # make it a list
-        print(type(twix_file))
+        print(type(in_file))
     elif type(in_file) is list:
         in_file_list = in_file
         
