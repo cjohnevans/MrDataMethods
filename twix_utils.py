@@ -45,9 +45,10 @@ class TwixFix:
         partial_write(self, output_file, start_pos, max_bytes=-1)
          write out a (modified) twix file, based on existing file, but starting at start_pos
          and finishing after max_bytes (if defined)
-            input_file = twix .dat file for input
             output_file = filename for output (will be overwritten if existing)
-            max_bytes = max no of bytes to write (for debugging)
+            start_pos = first byte to write
+            max_bytes = max no of bytes to write (for debugging).  Set to -1 to write to end
+                        of file, starting at start_pos
             overwrite = [0,1] whether to allow overwrite if output_file exists
                (0 = don't overwrite in any situation, 1 = prompt for overwrite)
         '''
