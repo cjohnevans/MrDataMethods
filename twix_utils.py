@@ -34,23 +34,26 @@ class TwixFix:
             pattern = br'Config'
             matches = re.search(pattern, self.twix_dump, re.DOTALL)
             # Config should be at position 8
-            new_start_pos = matches.start() - 8
-            self.header_start = new_start_pos
+            self.header_start = matches.start() - 8
         else:
             print('No header info.  Run twix_dump_data first')
 
+    def header_is_good(self):
+        if(self.header_start == 0):
+            return True
+        else:
+            return False
 
-    def partial_write(self, output_file, start_pos, max_bytes=-1, overwrite=0):
+
+    def partial_write(self, output_file, max_bytes=-1, overwrite=0):
         '''
-        partial_write(self, output_file, start_pos, max_bytes=-1)
-         write out a (modified) twix file, based on existing file, but starting at start_pos
-         and finishing after max_bytes (if defined)
-            output_file = filename for output (will be overwritten if existing)
-            start_pos = first byte to write
-            max_bytes = max no of bytes to write (for debugging).  Set to -1 to write to end
-                        of file, starting at start_pos
-            overwrite = [0,1] whether to allow overwrite if output_file exists
-               (0 = don't overwrite in any situation, 1 = prompt for overwrite)
+        partial_write(self, output_file, max_bytes=-1, overwrite=0)
+            write out a (modified) twix file, based on existing file, but starting at header_start
+            from find_header_start() and finishing after max_bytes (if defined)
+                output_file = filename for output (will be overwritten if existing)
+                max_bytes = max no of bytes to write (for debugging).  Set to -1 to write to end of file
+                overwrite = [0,1] whether to allow overwrite if output_file exists
+                    (0 = don't overwrite in any situation, 1 = prompt for overwrite)
         '''
 
         try:
@@ -64,14 +67,14 @@ class TwixFix:
                     print('Skipping ' + self.twix_file)
                     return False
                 else:
-                    print ('Writing to ', output_file)                    
+                    print ('Writing', output_file + '\n')                    
         except FileNotFoundError:
-                print ('Writing to ', output_file)
+                print ('Writing', output_file + '\n')
             
         with open(self.twix_file, 'rb') as f_in:
             with open(output_file, 'wb') as f_out:
                 byte = b'1'
-                pos=f_in.seek(start_pos)
+                pos=f_in.seek(self.header_start)
                 while ( byte and ( pos < max_bytes or max_bytes == -1) ):
                     byte = f_in.read(1)
                     pos = f_in.tell()
