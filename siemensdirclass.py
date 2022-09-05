@@ -15,25 +15,26 @@ class SiemensDir:
         print("Vector max :", np.amax(self.gabs))
         print("Vector min :", np.amin(self.gabs))
         tmp = np.unique(self.gabsrnd, False, False, True)
-        print "Grad scalings: ", tmp[0]
-        print "Number of Dirs:", tmp[1]
+        print("Grad scalings: ", tmp[0])
+        print("Number of Dirs:", tmp[1])
         fig =  plt.figure()
         ax1 = fig.add_subplot(1,1,1)
         ax1.plot(self.gabs)
         plt.show()
 
-    def plotbval(self, maxb):
-        print "Dimensions: ", self.dims
-        print "Directions: ", self.ndirs
-        print "Vector max :", np.amax(self.gabs)
-        print "Vector min :", np.amin(self.gabs)
+    def plotbval(self, maxb, title):
+        print("Dimensions: ", self.dims)
+        print("Directions: ", self.ndirs)
+        print("Vector max :", np.amax(self.gabs))
+        print("Vector min :", np.amin(self.gabs))
         # first element is unique grad scalings, second element is number of occurences
         tmp = np.unique(self.gabsrnd, False, False, True)
-        print "b values:       ", maxb*np.power(tmp[0],2)
-        print "Number of dirs: ", tmp[1]
+        print("b values:       ", maxb*np.power(tmp[0],2))
+        print("Number of dirs: ", tmp[1])
         fig =  plt.figure()
         ax1 = fig.add_subplot(1,1,1)
         ax1.plot(maxb*np.power(self.gabs,2), 'o-')
+        plt.title(title)
         plt.show()
 
 # setdir gets the directions from a numpy array (passed from another program)
@@ -51,7 +52,7 @@ class SiemensDir:
         nb0 = np.fix(self.ndirs/b0gap) # num of b0
         newdirs = self.ndirs + nb0
         tempvec = self.gvec
-        print self.ndirs, nb0, newdirs
+        print(self.ndirs, nb0, newdirs)
         for ii in range(0,int(newdirs), b0gap):
             tempvec = np.insert(tempvec, ii, [ 0, 0, 0 ], axis = 0)
         self.setdir(tempvec)
@@ -75,7 +76,7 @@ class SiemensDir:
 # write out in Siemens format
     def writedirfile(self):
         with open("dirout.dir", 'w') as fout:
-            print "Opened dirout.dir for writing"
+            print("Opened dirout.dir for writing")
             fout.write("# written by siemensdirclass.py  CJE 7/10/21\n\n")
             fout.write("[directions=" + str(self.ndirs) + "]\n")
             fout.write("Normalisation = none\n")
