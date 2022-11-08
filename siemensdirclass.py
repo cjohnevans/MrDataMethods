@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 class SiemensDir:
     def __init__(self):
         print("SiemensDir CJE Oct 2021")
+        self.filename = ''
 
 #  plot functions    
     def plotabs(self):
@@ -72,6 +73,7 @@ class SiemensDir:
                 veclist.append(vecflt[0:3])   # three values, in case of poorly formatted input file
         vecarr = np.array(veclist)
         self.setdir(vecarr)
+        self.filename = filename
 
 # write out in Siemens format
     def writedirfile(self):
