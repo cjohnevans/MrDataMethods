@@ -5,11 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class SiemensDir:
-    def __init__(self):
-        print("SiemensDir CJE Oct 2021")
+    def __init__(self, name):
+        self.filename = ''
+        self.name = name
 
 #  plot functions    
     def plotabs(self):
+        print("Name:       ", self.name)
         print("Dimensions: ", self.dims)
         print("Directions: ", self.ndirs)
         print("Vector max :", np.amax(self.gabs))
@@ -21,6 +23,26 @@ class SiemensDir:
         ax1 = fig.add_subplot(1,1,1)
         ax1.plot(self.gabs)
         plt.show()
+        
+    def plotsphere(self):
+        '''
+        %matplotlib notebook should go before this call in jupyter to allow interaction in the plot
+        '''
+        
+        xcoord = []
+        ycoord = []
+        zcoord = []
+        for singledir in self.gvec:
+            xcoord = np.append(xcoord, singledir[0])
+            ycoord = np.append(ycoord, singledir[1])
+            zcoord = np.append(zcoord, singledir[2])
+        
+        # Creating figure
+        fig = plt.figure(figsize = (10, 7))
+        ax = plt.axes(projection ="3d")
+        # Creating plot
+        ax.scatter3D(xcoord, ycoord, zcoord, c = self.gabs, cmap = "Set1_r")
+        plt.title(self.name)
 
     def plotbval(self, maxb, title):
         print("Dimensions: ", self.dims)
@@ -34,7 +56,7 @@ class SiemensDir:
         fig =  plt.figure()
         ax1 = fig.add_subplot(1,1,1)
         ax1.plot(maxb*np.power(self.gabs,2), 'o-')
-        plt.title(title)
+        plt.title(self.name)
         plt.show()
 
 # setdir gets the directions from a numpy array (passed from another program)
@@ -72,6 +94,7 @@ class SiemensDir:
                 veclist.append(vecflt[0:3])   # three values, in case of poorly formatted input file
         vecarr = np.array(veclist)
         self.setdir(vecarr)
+        self.filename = filename
 
 # write out in Siemens format
     def writedirfile(self):
