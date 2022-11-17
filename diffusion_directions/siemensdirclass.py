@@ -43,6 +43,7 @@ class SiemensDir:
         # Creating plot
         ax.scatter3D(xcoord, ycoord, zcoord, c = self.gabs, cmap = "Set1_r")
         plt.title(self.name)
+        plt.gca().set_aspect('equal')
 
     def plotbval(self, maxb, title):
         print("Dimensions: ", self.dims)
@@ -84,6 +85,10 @@ class SiemensDir:
         
 # readdirfile gets directions from existing Siemens dir file.
     def readdirfile(self, filename):
+        '''
+        readdirfile(filename)
+        read in a siemens format direction file
+        '''
         veclist = []
         ff = open(filename, "r")
         for lne in ff:
@@ -97,9 +102,9 @@ class SiemensDir:
         self.filename = filename
 
 # write out in Siemens format
-    def writedirfile(self):
-        with open("dirout.dir", 'w') as fout:
-            print("Opened dirout.dir for writing")
+    def writedirfile(self, filename):
+        with open(filename, 'w') as fout:
+            print("Opened " + filename + " for writing")
             fout.write("# written by siemensdirclass.py  CJE 7/10/21\n\n")
             fout.write("[directions=" + str(self.ndirs) + "]\n")
             fout.write("Normalisation = none\n")
