@@ -1,0 +1,11 @@
+# written by siemensdirclass.py  CJE 7/10/21
+
+[directions=5]
+Normalisation = none
+CoordinateSystem = xyz
+
+vector[0] = (0.0,0.0,0.0)
+vector[1] = (0.68,0.68,0.68)
+vector[2] = (0.68,-0.68,0.68)
+vector[3] = (-0.68,0.68,0.68)
+vector[4] = (0.68,0.68,-0.68)

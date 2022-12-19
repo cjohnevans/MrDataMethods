@@ -103,6 +103,11 @@ class SiemensDir:
 
 # write out in Siemens format
     def writedirfile(self, filename):
+        '''
+        writedirfile(filename)
+           filename - full path to file, otherwise writes to current dir.
+        '''
+        
         with open(filename, 'w') as fout:
             print("Opened " + filename + " for writing")
             fout.write("# written by siemensdirclass.py  CJE 7/10/21\n\n")
