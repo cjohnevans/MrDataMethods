@@ -12,6 +12,6 @@ cat /tmp/twixtmp.hdr | grep DeviceSerialNumber  | head -n 1
 cat /tmp/twixtmp.hdr | grep ProtocolName  | head -n 1
 cat /tmp/twixtmp.hdr | grep SequenceFileName  | head -n 1
 
-rm /tmp/twixtmp.hdr
+#rm /tmp/twixtmp.hdr
 rm /tmp/twixtmp.dat
 
