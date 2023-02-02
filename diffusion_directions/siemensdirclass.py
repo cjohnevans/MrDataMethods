@@ -44,7 +44,7 @@ class SiemensDir:
         ax.scatter3D(xcoord, ycoord, zcoord, c = self.gabs, cmap = "Set1_r")
         plt.title(self.name)
         plt.gca().set_aspect('equal')
-
+        
     def plotbval(self, maxb, title):
         print("Dimensions: ", self.dims)
         print("Directions: ", self.ndirs)
