@@ -52,17 +52,19 @@ def main(job):
         subprocess.run(['/cubric/software/cubids/core/fsl/fMRI_tSNR/tSNR_calc.sh', image_file, out_base, out_text])
         n = numpy.loadtxt(out_text)
         n = n.tolist()
-        if isinstance(n, list): #type(n) == "list":
+        if n is list:
             n = n[0]
-        n = float(n)
+            if n is list:
+                n = float(n[0])
         if math.isnan(n):
             n = -10
 
         v = numpy.loadtxt(out_rms)
         v = v.tolist()
-        if isinstance(v, list):
+        if v is list:
             v = v[0]
-        v = float(v)
+            if v is list:
+                v = float(v[0])
         if math.isnan(v):
             v = -10
 
