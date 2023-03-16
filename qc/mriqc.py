@@ -3,14 +3,14 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-# mriqc is generic for checking multi-volume MR data (e.g. fmri, qmt)
-class mriqc:
+# MultiVolQc is generic for checking multi-volume MR data (e.g. fmri, qmt)
+class MultiVolQc:
     '''
-    fmriqc class: data and methods for dealing with fmri quality control data
+    MultiVolQc class: data and methods for dealing with multi-volume MRI data
     '''
-    def __init__(self,path,name, in_vivo=True):
-        self.in_nii_file = name
-        self.nii_path = path
+    def __init__(self,filename, in_vivo=True, run_report=True):
+        self.in_nii_file = os.path.basename(filename)
+        self.nii_path = os.path.dirname(filename)
         self.in_vivo = False # default to phantom
         self.sfnr = 0
         # load the data here
@@ -19,10 +19,12 @@ class mriqc:
         self.report_path = os.path.join(self.nii_path, 'report')
         if not os.path.exists(self.report_path):
             os.mkdir(self.report_path)
+        if run_report:
+            self.create_report()
 
     def nii_load(self):
         '''
-        mriqc.nii_load()
+        MultiVolQc.nii_load()
 
         Load nifti file using nibabel load.
         Populate nii_img (nibabel) and vol_data (numpy array)
@@ -42,9 +44,10 @@ class mriqc:
             self.is_multi_volume = False
             self.n_vols = 1
             
-    def basic_stats(self):
+    def basic_stats(self, savenii=False):
         '''
-        mriqc.basic_stats( 
+        MultiVolQc.basic_stats( 
+            savenii=False
             )
         
         Calculate mean signal, stdev for each voxel and a simple mask
@@ -52,13 +55,22 @@ class mriqc:
         # calculate volume mean, stdev and sfnr
         self.vol_mean = np.mean(self.vol_data,0)
         self.vol_stdev = np.std(self.vol_data,0)
-        self.vol_mask = threshold_vol(self.vol_mean, True, 0.25)           
+        self.vol_mask = threshold_vol(self.vol_mean, True, 0.25)  
+        if savenii:
+            # create nifti, using same affine transform as original
+            nii_mean = nib.Nifti1Image(self.vol_mean, self.affine)
+            nii_stdev = nib.Nifti1Image(self.vol_stdev, self.affine)
+            nii_mask = nib.Nifti1Image(self.vol_mask, self.affine)
+            nib.save(nii_mean, os.path.join(self.nii_path, 'fmriqc_mean.nii'))
+            nib.save(nii_stdev, os.path.join(self.nii_path, 'fmriqc_stdev.nii'))
+            nib.save(nii_mask, os.path.join(self.nii_path, 'fmriqc_mask.nii'))
     
     def timeseries(self, mask=None, plot=False, savepng=False):
         '''
-        mriqc.mean_timeseries(
+        MultiVolQc.timeseries(
             mask=None
             plot=False
+            savepng=False
             )
         
         Calculate mean signal across whole volume or masked volume for each 
@@ -95,7 +107,7 @@ class mriqc:
                    
     def slice_time_plot(self, save_png=False):
          '''
-         mriqc.slice_time_plot(save_png=False)
+         MultiVolQc.slice_time_plot(save_png=False)
 
          Plot mean signal from each slice for all time points (no masking)
 
@@ -119,27 +131,63 @@ class mriqc:
                  
 
 # methods specific to fmri
-class fmriqc(mriqc):
+class FmriQc(MultiVolQc):
     '''
     methods specific to fmri (inherited from mriqc)
     '''    
-    def drift_correct(self):
+    def drift_correct(self, correct=False, mask=False, plot=False, savepng=False):
         '''
-        fmriqc.drift_correct(
+        FmriQc.drift_correct(
+            correct=False
+            plot=False
+            savepng=False
             )
+        Parameters
+        ----------
+        correct: apply correction (True/False).  If true, this updates fmriqc.vol_data
+                 to the drift corrected value, otherwise just returns the drift and optionally
+                 plots output
         Returns
         -------
+        drift: the peak-to-peak variation in the fit (as % of mean)
         None.
         '''
-        mean_sig = self.timeseries(mask=False, plot=False)
-        mean_sig = mean_sig[:,np.newaxis, np.newaxis, np.newaxis]
-        mean_sig_vol = np.tile(mean_sig, [1, self.shape[1], self.shape[2], self.shape[3]])
-        vol_data_dedrift = self.vol_data - mean_sig_vol
-        return(vol_data_dedrift)
+        st = self.timeseries(mask=mask)
+        vol_no = np.arange(0, len(st))
+        p = np.polyfit(vol_no, st, 2)
+        fitplot = p[0]*vol_no**2 + p[1]*vol_no + p[2]
+        # correct linear and 2nd order term, but don't demean data (zeroth)
+        corplot = p[0]*vol_no**2 + p[1]*vol_no
+        resid=st-fitplot
+        if plot:
+            fig = plt.figure(figsize=(30/2.5, 20/2.5))
+            ax1,ax2=fig.subplots(2,1)
+            ax1.plot(vol_no, st, vol_no, fitplot)
+            ax1.set_title('Pre drift correction, with fit')
+            ax2.plot(vol_no, resid)
+            ax2.set_title('Post drift correction')
+            ax2.set_xlabel('Volume No.')
+
+            if savepng:
+                fig.savefig(os.path.join(self.report_path, 'drift_correct.png'))
+                    
+        drift = 100 * (np.amax(fitplot)-np.amin(fitplot)) /  np.mean(st)
         
-    def calc_sfnr(self, mask=None, plot=True, savepng=False, savenii=False):
+        if correct:
+            #cor = - np.tile(corplot[:,np.newaxis,np.newaxis,np.newaxis],
+            #            [self.shape[1], self.shape[2], self.shape[3]] )
+            #plt.plot(cor[:,18,32,32])
+            #plt.set_title('cor')
+            self.vol_data = self.vol_data - np.tile(corplot[:,np.newaxis,np.newaxis,np.newaxis],
+                        [self.shape[1], self.shape[2], self.shape[3]] )
+            # if vol_data has been adjusted, need to recalculate mean, stdev
+            self.basic_stats()   
+    
+        return(drift)
+        
+    def calc_sfnr(self, mask=None, plot=False, savepng=False, savenii=False):
         '''
-        fmriqc.calc_sfnr(
+        FmriQc.calc_sfnr(
             mask=False
             plot=True
             savepng=False
@@ -158,6 +206,7 @@ class fmriqc(mriqc):
         self.vol_stdev = standard deviation of signal across timepoints
         self.vol_sfnr = signal to fluctuation noise sfnr (Glover)
         '''
+        self.basic_stats()
         #  if volume sfnr required (i.e. no mask specified), calculate based on 
         #  threshold of mean volume
         if not np.any(mask):
@@ -176,32 +225,31 @@ class fmriqc(mriqc):
 
         # discard zero values (as these are probably from the mask)
         sfnr = np.nanmean(np.ravel(self.vol_sfnr))
-        print(sfnr)
-        
+        vmean = np.nanmean(np.ravel(self.vol_mean))
+        vstd = np.nanmean(np.ravel(self.vol_stdev))
+        print(sfnr,vmean,vstd)        
         if savenii:
             # create nifti, using same affine transform as original
-            nii_mean = nib.Nifti1Image(self.vol_mean, self.affine)
-            nii_stdev = nib.Nifti1Image(self.vol_stdev, self.affine)
             nii_sfnr = nib.Nifti1Image(self.vol_sfnr, self.affine)
-            nib.save(nii_mean, os.path.join(self.nii_path, 'fmriqc_mean.nii'))
-            nib.save(nii_stdev, os.path.join(self.nii_path, 'fmriqc_stdev.nii'))
             nib.save(nii_sfnr, os.path.join(self.nii_path, 'fmriqc_sfnr.nii'))      
-        return sfnr
+        return (sfnr, vmean, vstd)
         
     def create_report(self):
         # build the elements needed, in case not run already
-        self.basic_stats() 
-        sfnr_vol=self.calc_sfnr(savepng=True)
+        self.basic_stats()
+        sfnr_vol,mn,sd = self.calc_sfnr(plot=True, savepng=True)
 
         # histogram of all image values (4D)
         plot_histogram(self.vol_data,save_png=True, save_path=self.report_path)
         self.slice_time_plot(True)
         
         if self.in_vivo:
-            t_series = self.timeseries(mask=None, plot=False)
+            drift = self.drift_correct(correct=True,mask=False, plot=True, savepng=True)
+            t_series = self.timeseries(mask=None, plot=True, savepng=True)
         else:
             voi_mask = self.voi((10,20,20))
-            t_series = self.timeseries(mask=voi_mask, plot=False)
+            drift = self.drift_correct(correct=True,mask=voi_mask, plot=True, savepng=True)
+            t_series = self.timeseries(mask=voi_mask, plot=True, savepng=True)
 
         html_fname = os.path.join(self.report_path, 'fmriqc_report.html')
         with open(html_fname, 'w') as f:
@@ -209,13 +257,15 @@ class fmriqc(mriqc):
             f.write('<table><tr><td>Image Dimensions</td><td>' + str(self.shape) + "</td></tr>\n")
             f.write('<tr><td>SFNR (volume) </td><td>' + "{0:.2f}".format(sfnr_vol) + "</td></tr>\n")
             if not self.in_vivo:
-                sfnr_voi=self.calc_sfnr(voi_mask, plot=False)           
+                sfnr_voi,mn,sd = self.calc_sfnr(voi_mask, plot=False)           
                 f.write('<tr><td>SFNR (VOI) </td><td>' + "{0:.2f}".format(sfnr_voi) + "</td></tr>\n")
-            f.write('<tr><td>Drift</td><td>' + "{0:.2f}".format(1.2345) + "</td></tr>\n")
+            f.write('<tr><td>Drift (%)</td><td>' + "{0:.2f}".format(drift) + "</td></tr>\n")
             f.write('</table>\n')
             pp = os.path.join('SFNR.png')
             f.write('<img src="' + pp + '"><br>\n')
             pp = os.path.join('pixel_histogram.png')
+            f.write('<img src="' + pp + '"><br>\n')
+            pp = os.path.join('drift_correct.png')      
             f.write('<img src="' + pp + '"><br>\n')
             pp = os.path.join('slice_time.png')      
             f.write('<img src="' + pp + '"><br>\n')
@@ -223,7 +273,7 @@ class fmriqc(mriqc):
 
     def voi(self, box_size):
         '''
-        phantomfmriqc.voi(
+        FmriQc.voi(
             box_size
         )
         
@@ -250,7 +300,7 @@ class fmriqc(mriqc):
 
 def threshold_vol(vol, by_fraction, threshold):
     '''
-    fmriqc.threshold_vol(
+    mriqc.threshold_vol(
        by_fraction
        threshold
     )
