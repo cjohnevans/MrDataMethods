@@ -116,9 +116,28 @@ class SiemensDir:
             fout.write("CoordinateSystem = xyz\n\n")
             for ii in range(0,self.ndirs):
                 fout.write("vector[" + str(ii) + "] = (" \
-                           + str(self.gvec[ii][0]) + "," \
-                           + str(self.gvec[ii][1]) + "," \
-                           + str(self.gvec[ii][2])  \
+                           + "{0:.6f}".format(self.gvec[ii][0]) + "," \
+                           + "{0:.6f}".format(self.gvec[ii][1]) + "," \
+                           + "{0:.6f}".format(self.gvec[ii][2])  \
                            + ")\n")
-            
+                
+    def write_ge_customtensor(self, filename):
+        '''
+        write_ge_customtensor(
+           filename
+           )
+           
+        write the gradient directions in a ge custom_tensor format (for GE
+        visit in May 2023)   
+        '''
+        with open(filename, 'w') as fout:
+            print("Opened " + filename + " for writing")
+            fout.write("# diffqc custom directions (John Evans, May 2023)\n")
+            fout.write(str(self.ndirs) + '\n')
+            for ii in range(0,self.ndirs):
+                fout.write("{0:.5f}".format(self.gvec[ii][0]) + " " \
+                           + "{0:.5f}".format(self.gvec[ii][1]) + " " \
+                           + "{0:.5f}".format(self.gvec[ii][2])  \
+                           + "\n")
+        
         
