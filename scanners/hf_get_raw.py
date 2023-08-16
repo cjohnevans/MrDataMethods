@@ -12,4 +12,4 @@ subprocess.run(['ls','-1'])
 raw_exam=subprocess.run(['ssh','-XY','-p','25125','rrdf@10.186.64.34','ls',data_path_hfrds])
 print(type(raw_exam))
 
-print(dir(raw_exam))
+print(raw_exam.stdout)
