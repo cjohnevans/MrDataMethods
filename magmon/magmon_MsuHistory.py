@@ -59,10 +59,12 @@ for d in msu_dat:
 
 # into pandas
 msu_pd = pd.DataFrame(msu_dat2,columns=msu_hdr2,index=date_pd, dtype=float)
+msu_pd.index.rename('Date', inplace=True)
+msu_pd_out = msu_pd.iloc[-4:,:]
 
 date_out = '{:%Y-%m-%d_%H%M%S}'.format(msu_pd.index[-1])
-msu_pd.to_csv(os.path.join(magmon_output_path,'msu_history.csv'))
-msu_pd.to_csv(os.path.join(magmon_output_path,date_out+'_msu_history.csv'))
+msu_pd_out.to_csv(os.path.join(magmon_output_path,'msu_history.csv'),header=True)
+msu_pd_out.to_csv(os.path.join(magmon_output_path,date_out+'_msu_history.csv'))
 
 
 msu_pd.plot(y=['dColdHeadTemperature','dBoreTemperature','dLinkTemperature'],title='Temperatures (K)')
