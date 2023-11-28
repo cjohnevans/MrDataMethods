@@ -95,7 +95,7 @@ class SiemensDir:
             if "vector" in lne:
                 vecstr = lne[12:-1].replace('(', '').replace(')','').replace(' ','').replace('\r','')
                 vecstr = vecstr.replace('=','').split(',')
-                vecflt = [float(j) for j in vecstr]
+                vecflt = [float(j) for j in vecstr[0:3] ]
                 veclist.append(vecflt[0:3])   # three values, in case of poorly formatted input file
         vecarr = np.array(veclist)
         self.setdir(vecarr)
