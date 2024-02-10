@@ -1,8 +1,13 @@
 function [shells,b0s]=write_siemens_b_vecs(dirs,filename)
 
-%% From Chantal in Jan 2024:
-%% function to write b-vec files
-%% I usually use this tool http://www.emmanuelcaruyer.com/q-space-sampling.php, which 1) can distribute gradient directions over multiple shells 2) takes into account that if the acquisition is cut short you still have a more or less optimal distribution and 3) flips directions to the other hemisphere to later correct better for eddy currents with FSL. But you could also use Camino.
+% From Chantal in Jan 2024:
+% function to write b-vec files
+% I usually use this tool http://www.emmanuelcaruyer.com/q-space-sampling.php, which 
+% 1) can distribute gradient directions over multiple shells 
+% 2) takes into account that if the acquisition is cut short you still have a more or 
+%    less optimal distribution and 
+% 3) flips directions to the other hemisphere to later correct better for eddy currents with FSL. 
+% But you could also use Camino.
 
 
 mags=sum(dirs.^2,2).^0.5;
