@@ -101,6 +101,8 @@ class SiemensDir:
         self.setdir(vecarr)
         self.filename = filename
 
+
+
 # write out in Siemens format
     def writedirfile(self, filename):
         '''
@@ -140,4 +142,20 @@ class SiemensDir:
                            + "{0:.5f}".format(self.gvec[ii][2])  \
                            + "\n")
         
-        
+class CaruyerDir(SiemensDir):
+    def __init__(self, name):
+        self.filename = ''
+        self.name = name
+        self.shells = []
+
+    def read_caruyer(self, filename):
+        '''
+        Read directions from a Caruyer file from https://github.com/ecaruyer/qspace or 
+        http://www.emmanuelcaruyer.com/q-space-sampling.php
+        '''
+        with open(filename, 'r') as f:
+            print("Opened " + filename + " for reading.")
+            for line in f:
+                txt=line.replace('\n','').split('\t')
+
+
