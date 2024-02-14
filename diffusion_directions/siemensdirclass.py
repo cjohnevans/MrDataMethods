@@ -146,16 +146,25 @@ class CaruyerDir(SiemensDir):
     def __init__(self, name):
         self.filename = ''
         self.name = name
-        self.shells = []
+        self.shell = []
 
     def read_caruyer(self, filename):
         '''
         Read directions from a Caruyer file from https://github.com/ecaruyer/qspace or 
         http://www.emmanuelcaruyer.com/q-space-sampling.php
         '''
+        veclist = []
         with open(filename, 'r') as f:
             print("Opened " + filename + " for reading.")
             for line in f:
-                txt=line.replace('\n','').split('\t')
+                if line[0] != '#':
+                    txt=line.replace('\n','').split('\t')
+                    self.shell.append(int(txt[0]))
+                    vecflt = [float(j) for j in txt[1:] ]
+                    veclist.append(vecflt[0:3])   # three values, in case of poorly formatted input file
+        vecarr = np.array(veclist)
+        self.setdir(vecarr)
+        self.filename = filename
 
+        print(len(self.shell), len(veclist))
 
