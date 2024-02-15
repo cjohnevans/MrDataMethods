@@ -13,9 +13,9 @@ import os, sys
 sys.path.append('/home/sapje1/code/python_mrobjects/diffusion_directions')
 import siemensdirclass as dirns
 
+# this takes input from the Caruyer 'multishell' script 
 ms = dirns.CaruyerDir('multishell')
-#ms.read_caruyer('/Users/john/code/temp.txt')
 ms.read_caruyer('/home/sapje1/code/qspace/scripts/03-shells-60-60-60.txt')
-
-ms.plotbval(1000, 'test')
+#ms.read_caruyer('/Users/john/code/qspace/scripts/01-shells-12.txt')
+ms.plotbval(1000, 'Caruyer')
 ms.plotsphere()
