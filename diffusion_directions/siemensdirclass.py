@@ -24,11 +24,7 @@ class SiemensDir:
         ax1.plot(self.gabs)
         plt.show()
         
-    def plotsphere(self):
-        '''
-        %matplotlib notebook should go before this call in jupyter to allow interaction in the plot
-        '''
-        
+    def xyzcoord(self):      
         xcoord = []
         ycoord = []
         zcoord = []
@@ -36,14 +32,74 @@ class SiemensDir:
             xcoord = np.append(xcoord, singledir[0])
             ycoord = np.append(ycoord, singledir[1])
             zcoord = np.append(zcoord, singledir[2])
+            
+        return xcoord, ycoord, zcoord
+        
+    def set3dplot(self, xcoord, ycoord, zcoord):
+        # Creating figure
+        fig = plt.figure(figsize = (12, 3))
+        ax = fig.subplots(1,3)
+        # Creating plot
+        ax[0].plot(xcoord,ycoord,'o')
+        ax[0].set_xlabel('x')
+        ax[0].set_ylabel('y')
+        ax[0].set_aspect('equal')
+        ax[0].set_xlim(-1,1)
+        ax[0].set_ylim(-1,1)
+        
+        ax[1].plot(xcoord,zcoord,'o')
+        ax[1].set_xlabel('x')
+        ax[1].set_ylabel('z')
+        ax[1].set_aspect('equal')
+        ax[1].set_xlim(-1,1)
+        ax[1].set_ylim(-1,1)
+        
+        ax[2].plot(ycoord,zcoord,'o')
+        ax[2].set_xlabel('y')
+        ax[2].set_ylabel('z')
+        ax[2].set_aspect('equal')
+        ax[2].set_xlim(-1,1)
+        ax[2].set_ylim(-1,1)
+        
+    def plotsphere(self):
+            
+        '''
+        %matplotlib notebook should go before this call in jupyter to allow interaction in the plot
+        '''   
+        xcoord, ycoord, zcoord = self.xyzcoord()
+        self.set3dplot(xcoord, ycoord, zcoord)
+        
+    def plothalfsphere(self):
+        xcoord, ycoord, zcoord = self.xyzcoord()
+        zcoord[zcoord < 0] *= -1
+        self.set3dplot(xcoord, ycoord, zcoord)
+
+        
+    def plotprojections(self):
+        '''
+        plot projections along X, Y, Z
+        
+
+        Returns
+        -------
+        None.
+
+        '''
+        xcoord, ycoord, zcoord = self.xyzcoord()
+              
+        zcoord[zcoord < 0] *= -1
         
         # Creating figure
         fig = plt.figure(figsize = (10, 7))
+        
         ax = plt.axes(projection ="3d")
         # Creating plot
         ax.scatter3D(xcoord, ycoord, zcoord, c = self.gabs, cmap = "Set1_r")
         plt.title(self.name)
         plt.gca().set_aspect('equal')
+        
+        
+        return
         
     def plotbval(self, maxb, title):
         print("Dimensions: ", self.dims)

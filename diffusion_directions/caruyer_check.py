@@ -15,7 +15,14 @@ import siemensdirclass as dirns
 
 # this takes input from the Caruyer 'multishell' script 
 ms = dirns.CaruyerDir('multishell')
-ms.read_caruyer('/home/sapje1/code/qspace/scripts/03-shells-60-60-60.txt')
+#ms.read_caruyer('/home/sapje1/code/qspace/scripts/03-shells-60-60-60.txt')
 #ms.read_caruyer('/Users/john/code/qspace/scripts/01-shells-12.txt')
-ms.plotbval(1000, 'Caruyer')
+#ms.read_caruyer('/Users/john/code/qspace/scripts/01-shells-61.txt')
+ms.read_caruyer('/Users/john/Downloads/samples(1).txt')
+
+
+#ms.plotbval(1000, 'Caruyer')
 ms.plotsphere()
+ms.plothalfsphere()
+
+ms.plotprojections()
