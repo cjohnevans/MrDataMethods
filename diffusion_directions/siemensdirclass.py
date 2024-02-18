@@ -23,6 +23,12 @@ class SiemensDir:
         ax1 = fig.add_subplot(1,1,1)
         ax1.plot(self.gabs)
         plt.show()
+
+    def g_rescale(self, rescale):
+        '''
+        rescale all values in the gvec 
+        '''
+        self.setdir(self.gvec * rescale)
         
     def xyzcoord(self):      
         xcoord = []
