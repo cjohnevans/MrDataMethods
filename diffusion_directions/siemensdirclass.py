@@ -35,7 +35,7 @@ class SiemensDir:
             
         return xcoord, ycoord, zcoord
         
-    def set3dplot(self, xcoord, ycoord, zcoord):
+    def set_3plane_plot(self, xcoord, ycoord, zcoord):
         # Creating figure
         fig = plt.figure(figsize = (12, 3))
         ax = fig.subplots(1,3)
@@ -61,24 +61,26 @@ class SiemensDir:
         ax[2].set_xlim(-1,1)
         ax[2].set_ylim(-1,1)
         
-    def plotsphere(self):
+    def plot_3plane_projections(self):
             
         '''
         %matplotlib notebook should go before this call in jupyter to allow interaction in the plot
         '''   
         xcoord, ycoord, zcoord = self.xyzcoord()
-        self.set3dplot(xcoord, ycoord, zcoord)
+        self.set_3plane_plot(xcoord, ycoord, zcoord)
         
-    def plothalfsphere(self):
+    def plot_3plane_projections_halfsphere(self):
         xcoord, ycoord, zcoord = self.xyzcoord()
         zcoord[zcoord < 0] *= -1
-        self.set3dplot(xcoord, ycoord, zcoord)
+        self.set_3plane_plot(xcoord, ycoord, zcoord)
 
         
-    def plotprojections(self):
+    def plot_sphere(self, half_sphere=False):
         '''
         plot projections along X, Y, Z
         
+        half_sphere = True False
+            flip the z directions so that all sit on half sphere
 
         Returns
         -------
@@ -86,8 +88,10 @@ class SiemensDir:
 
         '''
         xcoord, ycoord, zcoord = self.xyzcoord()
-              
-        zcoord[zcoord < 0] *= -1
+ 
+#       flip onto half sphere  
+        if half_sphere:
+            zcoord[zcoord < 0] *= -1
         
         # Creating figure
         fig = plt.figure(figsize = (10, 7))
