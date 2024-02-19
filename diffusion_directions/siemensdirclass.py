@@ -4,6 +4,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def append_dirs(first_dir_set, second_dir_set):
+    '''
+    
+
+    Parameters
+    ----------
+    first_dir_set : SiemensDir
+        First direction direction set.
+    
+    second_dir_set : SiemensDir
+        Second direction direction set to append to first.
+
+    Returns
+    -------
+    new_dir_set  : SiemensDir
+        New direction set with appended directions
+
+    '''
+    
+    tempvec = first_dir_set.gvec
+    print(len(tempvec))
+    tempvec = np.append(tempvec, second_dir_set.gvec, axis=0)
+    print(len(tempvec))
+    new_dir_set = SiemensDir('Appended Directions')
+    new_dir_set.setdir(tempvec)
+    return(new_dir_set)
+
 class SiemensDir:
     def __init__(self, name):
         self.filename = ''
@@ -135,6 +162,7 @@ class SiemensDir:
         self.dims = self.gvec.shape
         print(self.dims[0])
         self.ndirs = self.dims[0]
+        
 
 #add b0 scans every b0gap volumes 
     def addb0(self, b0gap):
