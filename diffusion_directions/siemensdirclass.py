@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 def append_dirs(first_dir_set, second_dir_set):
     '''
-    
 
     Parameters
     ----------
@@ -32,8 +31,12 @@ def append_dirs(first_dir_set, second_dir_set):
     return(new_dir_set)
 
 class SiemensDir:
-    def __init__(self, name):
-        self.filename = ''
+    def __init__(self, name, file_name=None):
+        if file_name:
+            self.filename = filename
+            self.readdirfile(self.filename)
+        else:
+            self.filename = ''
         self.name = name
 
 #  plot functions    
@@ -237,10 +240,18 @@ class SiemensDir:
                            + "\n")
         
 class CaruyerDir(SiemensDir):
-    def __init__(self, name):
-        self.filename = ''
+        
+    def __init__(self, name, file_name=None):
+        
         self.name = name
         self.shell = []
+        
+        if file_name:
+            self.filename = file_name
+            self.read_caruyer(file_name)
+        else:
+            self.filename = ''
+        
 
     def read_caruyer(self, filename):
         '''
@@ -259,6 +270,40 @@ class CaruyerDir(SiemensDir):
         vecarr = np.array(veclist)
         self.setdir(vecarr)
         self.filename = filename
+        self.n_shells = len(np.unique(self.shell))
 
         print(len(self.shell), len(veclist))
+        
+    def rescale_caruyer(self, rescale_shell):
+        '''
+        Parameters
+        ----------
+        rescale_shell : np.array
+            Array of values to rescale the shells.
+        
+        second_dir_set : SiemensDir
+            Second direction direction set to append to first.
+
+        Returns
+        -------
+        new_dir_set  : SiemensDir
+            New direction set with appended directions
+
+        '''
+        
+        if self.n_shells != len(rescale_shell):
+            print('Direction file has ' + str(self.n_shells) + ' shells, but ' + str(len(rescale_shell)) + ' rescales provided.')
+            return
+        
+        rescale = np.array(rescale_shell)
+        self.gvec_unitsphere = self.gvec
+        newvec = np.empty([self.ndirs,3])
+        
+        for i in range(self.ndirs):
+            newvec[i] = self.gvec_unitsphere[i]*rescale[self.shell[i]]
+            print(i, self.shell[i], newvec[i])
+        print(newvec)            
+
+        
+        
 
