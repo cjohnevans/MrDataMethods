@@ -31,7 +31,7 @@ def append_dirs(first_dir_set, second_dir_set):
     return(new_dir_set)
 
 class SiemensDir:
-    def __init__(self, name, file_name=None):
+    def __init__(self, name='untitled', file_name=None):
         if file_name:
             self.filename = filename
             self.readdirfile(self.filename)
@@ -138,7 +138,6 @@ class SiemensDir:
         plt.title(self.name)
         plt.gca().set_aspect('equal')
         
-        
         return
         
     def plotbval(self, maxb, title):
@@ -241,7 +240,7 @@ class SiemensDir:
         
 class CaruyerDir(SiemensDir):
         
-    def __init__(self, name, file_name=None):
+    def __init__(self, name='untitled', file_name=None):
         
         self.name = name
         self.shell = []
@@ -302,7 +301,8 @@ class CaruyerDir(SiemensDir):
         for i in range(self.ndirs):
             newvec[i] = self.gvec_unitsphere[i]*rescale[self.shell[i]]
             print(i, self.shell[i], newvec[i])
-        print(newvec)            
+        self.setdir(newvec)            
+
 
         
         
