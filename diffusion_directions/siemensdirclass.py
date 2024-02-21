@@ -33,8 +33,8 @@ def append_dirs(first_dir_set, second_dir_set):
 class SiemensDir:
     def __init__(self, name='untitled', file_name=None):
         if file_name:
-            self.filename = filename
-            self.readdirfile(self.filename)
+            self.filename = file_name
+            self.readdirfile(file_name)
         else:
             self.filename = ''
         self.name = name
