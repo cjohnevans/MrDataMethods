@@ -258,14 +258,18 @@ class CaruyerDir(SiemensDir):
         http://www.emmanuelcaruyer.com/q-space-sampling.php
         '''
         veclist = []
+        shell_temp = []
         with open(filename, 'r') as f:
             print("Opened " + filename + " for reading.")
             for line in f:
                 if line[0] != '#':
                     txt=line.replace('\n','').split('\t')
-                    self.shell.append(int(txt[0]))
+                    shell_temp.append(int(txt[0]))
                     vecflt = [float(j) for j in txt[1:] ]
                     veclist.append(vecflt[0:3])   # three values, in case of poorly formatted input file
+        # some caruyer files number shells from 0, some number shells starting with 1.
+        self.shell = shell_temp - np.min(shell_temp)
+
         vecarr = np.array(veclist)
         self.setdir(vecarr)
         self.filename = filename
@@ -275,19 +279,15 @@ class CaruyerDir(SiemensDir):
         
     def rescale_caruyer(self, rescale_shell):
         '''
+
         Parameters
         ----------
         rescale_shell : np.array
             Array of values to rescale the shells.
-        
-        second_dir_set : SiemensDir
-            Second direction direction set to append to first.
 
         Returns
         -------
-        new_dir_set  : SiemensDir
-            New direction set with appended directions
-
+        None
         '''
         
         if self.n_shells != len(rescale_shell):
@@ -299,6 +299,7 @@ class CaruyerDir(SiemensDir):
         newvec = np.empty([self.ndirs,3])
         
         for i in range(self.ndirs):
+            print(i)
             newvec[i] = self.gvec_unitsphere[i]*rescale[self.shell[i]]
             print(i, self.shell[i], newvec[i])
         self.setdir(newvec)            
