@@ -38,6 +38,14 @@ class twix_map():
                 if "hdr" not in k:
                     print(k, o[k].base_size) 
             o_num=o_num+1
+            
+    def centre_of_mass(mass_distn):
+        # centre of mass is SUMi (mi xi) /  SUMi (mi)
+        # that is, the sum of all massxdistance normalised by the total mass, or expressing this a vectors
+        # CoM = (m)T . x / m(T) . ones
+        
+        CoM = np.matmul(mass_distn.T, np.arange(len(mass_distn))) / np.matmul(mass_distn.T,np.ones(len(mass_distn)))
+        return CoM            
 
     def prep_k_space(twix_map, removeos=False, apply_phasecor=False):
         return null
