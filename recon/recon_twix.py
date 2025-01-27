@@ -47,7 +47,32 @@ class twix_map():
         CoM = np.matmul(mass_distn.T, np.arange(len(mass_distn))) / np.matmul(mass_distn.T,np.ones(len(mass_distn)))
         return CoM            
 
-    def prep_k_space(twix_map, removeos=False, apply_phasecor=False):
-        return null
+    def prep_k_space(self, removeos=False, epi_nyquist_cor=False):
+        '''
+        prep_k_space:
+            prepare the k-space data for further processing.
+
+        Parameters
+        ----------
+        twix_map : TYPE
+            DESCRIPTION.
+        removeos : TYPE, optional
+            DESCRIPTION. The default is False.
+        epi_nyquist_cor : TYPE, optional
+            DESCRIPTION. The default is False.
+
+        Returns
+        -------
+        k_sp : NUMPY ARRAY
+            numpy array suitable for further processing in BART
+
+        '''
+        
+        k1 = self.map[-1]['image'][:]
+        k2 = np.squeeze(k1)
+        
+        k_sp = k2
+        
+        return k_sp
     
 
