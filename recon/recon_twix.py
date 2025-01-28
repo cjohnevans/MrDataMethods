@@ -2,6 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from bart import bart
+import cfl
 import twixtools
 from utils import convert_to_cfl
 
@@ -74,5 +75,22 @@ class twix_map():
         k_sp = k2
         
         return k_sp
+    
+    def write_cfl(self, filename):
+        '''
+        
+
+        Parameters
+        ----------
+        filename : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        '''
+
+
     
 
