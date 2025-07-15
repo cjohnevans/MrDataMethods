@@ -27,14 +27,6 @@ log7t = log7t[log7t['Pressure (mB)']!=0]
 meas_time = log7t['Date & time'].str.split('/|:| ', regex=True, expand=False)
 # convert to datetime object
 log7t['datetime'] = meas_time.apply(strtime_to_datetime)
-cryo_T = log7t[['Service Shield Link Top Temp 4ABb (K)',\
-                      'Patient Shield Link Top Temp 3ABb (K)',\
-                      'Service Endplate Temp 2AB (K)',\
-                      'Patient Endplate Temp 1AB (K)',\
-                      'Service Outer Tube Bottom Temp 2ABb (K)',\
-                      'Service Coldhead 1st Stage Temp 6AB (K)',\
-                      'Patient Coldhead 1st Stage Temp 5AB (K)' \
-                     ]]
 
 plt.plot(log7t['datetime'].values, log7t['Pressure (mB)'].values)
 plt.xticks(rotation=20)
@@ -43,14 +35,17 @@ plt.savefig(os.path.join(logdir,'cryostat_pressure.png'))
 #plt.show()
 plt.close()
 
-plt.plot(log7t['datetime'],log7t['Service Shield Link Top Temp 4ABb (K)'], \
-        log7t['datetime'],log7t['Service Endplate Temp 2AB (K)'], \
-        log7t['datetime'],log7t['Patient Endplate Temp 1AB (K)'], \
-        log7t['datetime'],log7t['Service Outer Tube Bottom Temp 2ABb (K)'], \
-        log7t['datetime'],log7t['Patient Coldhead 1st Stage Temp 5AB (K)'])
+#plt.plot(log7t['datetime'],log7t['Service Shield Link Top Temp 4ABb (K)'], \
+#        log7t['datetime'],log7t['Service Endplate Temp 2AB (K)'], \
+#        log7t['datetime'],log7t['Patient Endplate Temp 1AB (K)'], \
+#        log7t['datetime'],log7t['Service Outer Tube Bottom Temp 2ABb (K)'], \
+#        log7t['datetime'],log7t['Patient Coldhead 1st Stage Temp 5AB (K)'])
+
+plt.plot(log7t['datetime'],log7t['Service 1st Stage Temp 11AB (K)'])
+
 plt.xticks(rotation=20)
 #plt.show()
 plt.title('Cryostat Temperatures (K)')
 plt.savefig(os.path.join(logdir,'cryostat_T.png'))
 
-print(log7t[['Date & time', 'Pressure (mB)','Service Shield Link Top Temp 4ABb (K)' ]].tail(6))
+print(log7t[['Date & time', 'Pressure (mB)','Service 1st Stage Temp 11AB (K)' ]].tail(6))
