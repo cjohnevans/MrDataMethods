@@ -11,12 +11,8 @@ import os
 # CJE April 2023
 
 # get last log file from directory
-logdir = '/cubric/scanners/mri/7t/magnet_logs/'
-logdirlist = os.listdir(logdir)
-logdirlist.sort()
-logname = logdirlist[-1]
-print('Latest log: ' + logdirlist[-1])
-logfile = os.path.join(logdir,logname)
+logdir = '/home/john/Downloads/'
+logfile = os.path.join(logdir,'022771data.txt')
 
 def strtime_to_datetime(t):
     '''
