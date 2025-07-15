@@ -1,9 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
-import os
-import sys
-
+import os, sys
 
 # requires magmon7T_aglient.py to be running on the Aglient PC to periodically
 # copy the magmon data file across to the transfer directory.
@@ -16,21 +14,17 @@ import sys
 # sys.argv[0] is the script name
 # sys.argv[1] is the first argument
 if len(sys.argv) > 1:
-    variable = sys.argv[1]
-    print("Received variable:", variable)
+    log_full_path = sys.argv[1]
+    print("Log file:", log_full_path)
 else:
-    print("No argument provided.")
+    print("")
+    print("magmon7T.py")
+    print("Usage: python magmon7T.py full_path_to_log_file")
+    print("")
+    sys.exit()
 
-
-# get last log file from directory
-logdir = '/home/john/Downloads/'
-logfile = os.path.join(logdir,'022771data.txt')
-
-
-full_path = "/home/user/documents/report.pdf"
-path = os.path.dirname(full_path)
-filename = os.path.basename(full_path)
-
+log_dir = os.path.dirname(log_full_path)
+log_file = os.path.basename(log_full_path)
 
 def strtime_to_datetime(t):
     '''
@@ -39,7 +33,7 @@ def strtime_to_datetime(t):
     t_dt = dt.datetime(int(t[2]),int(t[1]),int(t[0]),int(t[3]),int(t[4]),int(t[5]))
     return t_dt
 
-log7t = pd.read_csv(logfile, delimiter='\t')
+log7t = pd.read_csv(log_full_path, delimiter='\t')
 log7t = log7t[log7t['Pressure (mB)']!=0]
 
 meas_time = log7t['Date & time'].str.split('/|:| ', regex=True, expand=False)
@@ -49,7 +43,7 @@ log7t['datetime'] = meas_time.apply(strtime_to_datetime)
 plt.plot(log7t['datetime'].values, log7t['Pressure (mB)'].values)
 plt.xticks(rotation=20)
 plt.title('7T He can pressure (mB)')
-plt.savefig(os.path.join(logdir,'cryostat_pressure.png'))
+plt.savefig(os.path.join(log_dir,'cryostat_pressure.png'))
 #plt.show()
 plt.close()
 
@@ -63,7 +57,7 @@ plt.plot(log7t['datetime'],log7t['Service 1st Stage Temp 11AB (K)'])
 
 plt.xticks(rotation=20)
 #plt.show()
-plt.title('Cryostat Temperatures (K)')
-plt.savefig(os.path.join(logdir,'cryostat_T.png'))
+plt.title('Srv1stStageTemp')
+plt.savefig(os.path.join(log_dir,'cryostat_T.png'))
 
 print(log7t[['Date & time', 'Pressure (mB)','Service 1st Stage Temp 11AB (K)' ]].tail(6))
